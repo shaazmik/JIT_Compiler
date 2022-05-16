@@ -1,0 +1,61 @@
+Stack [Error #1488] in  file "..\libr\Stack_func.cpp" function "type_array stack_popka(pstack_info*)" dump alerted on "290" line 
+
+
+STACK CAPACITY: 20
+STACK SIZE: -1
+STACK HASN'T TOP ELEMENT : NULLPTR
+STACK STRUCT LEFT CANARY:   233642686
+STACK STRUCT RIGHT CANARY:  233642686
+STACK LEFT CANARY:          233642686
+STACK RIGHT CANARY:         233642686
+STACK HASH:                 -805523802
+
+Stack [Error #1488] in  file "..\libr\Stack_func.cpp" function "type_array stack_popka(pstack_info*)" dump alerted on "290" line 
+
+
+STACK CAPACITY: 20
+STACK SIZE: -1
+STACK HASN'T TOP ELEMENT : NULLPTR
+STACK STRUCT LEFT CANARY:   233642686
+STACK STRUCT RIGHT CANARY:  233642686
+STACK LEFT CANARY:          233642686
+STACK RIGHT CANARY:         233642686
+STACK HASH:                 -805523802
+
+Stack [Error #1945] in  file "..\libr\Stack_func.cpp" function "int stack_pushka(pstack_info*, type_array)" dump alerted on "300" line 
+
+
+STACK CAPACITY: 29
+STACK SIZE: 30
+STACK'S TOP ELEMENT: 1236
+STACK: 123612361236123612361236123612361236123612361236123612361236123612361236123612361236123612361236123612361236123612361236
+STACK STRUCT LEFT CANARY:   233642686
+STACK STRUCT RIGHT CANARY:  233642686
+STACK LEFT CANARY:          233642686
+STACK RIGHT CANARY:         1236
+STACK HASH:                 172699376
+
+Stack [Error #1488] in  file "..\libr\Stack_func.cpp" function "type_array stack_popka(pstack_info*)" dump alerted on "290" line 
+
+
+STACK CAPACITY: 20
+STACK SIZE: -1
+STACK HASN'T TOP ELEMENT : NULLPTR
+STACK STRUCT LEFT CANARY:   233642686
+STACK STRUCT RIGHT CANARY:  233642686
+STACK LEFT CANARY:          233642686
+STACK RIGHT CANARY:         233642686
+STACK HASH:                 -805523802
+
+Stack [Error #1488] in  file "..\libr\Stack_func.cpp" function "type_array stack_popka(pstack_info*)" dump alerted on "290" line 
+
+
+STACK CAPACITY: 20
+STACK SIZE: -1
+STACK HASN'T TOP ELEMENT : NULLPTR
+STACK STRUCT LEFT CANARY:   233642686
+STACK STRUCT RIGHT CANARY:  233642686
+STACK LEFT CANARY:          233642686
+STACK RIGHT CANARY:         233642686
+STACK HASH:                 -805523802
+

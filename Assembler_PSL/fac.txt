@@ -1,0 +1,33 @@
+IN ;  n - число
+POP ax
+PUSH 1
+POP bx ; bx - наше текущее произведение
+PUSH ax
+PUSH 0
+JB :negative
+CALL :factorial
+PUSH bx
+SHOW
+HLT
+:factorial 
+PUSH ax
+PUSH 2
+JB :vixod
+PUSH ax
+PUSH bx
+MUL
+POP bx
+PUSH ax
+PUSH 1
+SUB
+POP ax
+CALL :factorial
+RET
+:vixod
+RET
+:negative
+PUSH -1
+POP bx
+PUSH bx
+SHOW
+HLT

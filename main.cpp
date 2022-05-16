@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <./CPU_emulator/enum.h>
-#include <./CPU_emulator/libr/Stack.h>
+#include "./Assembler_PSL/enum.h"
+#include "./Assembler_PSL/libr/Stack.h"
 
 
 typedef struct x86bin_code
@@ -10,8 +10,8 @@ typedef struct x86bin_code
    char* x86code;
    char* PSL_code;
 
-   size_t PSL_size;
-   size_t capacity;
+   size_t PSL_size = 0;
+   size_t capacity = 0;
 
 
 }x86bin_code;
@@ -54,14 +54,32 @@ int x86bin_code_dec(x86bin_code* x86bin_code)
 
 }
 
+
+void input_code_from_file(FILE* ass, x86bin_code* x86code)
+{
+   fscanf(ass,"%d", &(x86code->PSL_size));
+
+  // printf("%d", CPPU->len_of_code);
+
+   x86code->PSL_code = (char*)calloc(x86code->PSL_size, sizeof(char));
+
+   fread(x86code->PSL_code, sizeof(char), x86code->PSL_size, ass);
+}
+
 int main()
 {
-   FILE* binary_file = fopen("./CPU_emulator/assembler.bin", "rb");
+   FILE* binary_file = fopen("./Assembler_PSL/assembler.bin", "rb");
 
    if (!check_PSL_file(binary_file))
    {
       return 1;
    }
+
+   x86bin_code x86code = {};
+
+   input_code_from_file(binary_file, &x86code);
+
+   
 
    return 0;
 }
