@@ -1,4 +1,4 @@
-#include ".\CPU.h"
+#include "./CPU.h"
 
 int check_asm_file(FILE* ass)
 {

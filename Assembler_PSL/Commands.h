@@ -507,8 +507,6 @@ DEF_CMD_(0x7F, PRINT_CADR, 0,
 
     puts(cadr);
 
-    Sleep(Cadr_time);
-
     ip++;
 }
 )

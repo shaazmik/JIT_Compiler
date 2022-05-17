@@ -1,4 +1,4 @@
-#include ".\CPU.h"
+#include "./CPU.h"
 
 
 int just_do_it(struct CPU* CPPU)

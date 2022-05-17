@@ -1,9 +1,8 @@
 #ifndef CPU_H
 #define CPU_H
 
-#include "..\libr\Stack.h"
-#include "..\enum.h"
-#include "windows.h"
+#include "../libr/Stack.h"
+#include "../enum.h"
 
 const int Max_memory = 4000;
 const int lines_in_cadr = 30; 
