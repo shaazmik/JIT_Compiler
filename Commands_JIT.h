@@ -1,3 +1,8 @@
+DEF_CMD_(0x0F, 0xC3, HLT, 0, 
+{
+
+}
+
 
 DEF_CMD_(0x11, PUSH, 1, 
 {   
