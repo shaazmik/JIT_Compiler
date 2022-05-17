@@ -5,6 +5,17 @@
 int compile(x86bin_code* x86struct)
 {
    assert(x86struct != nullptr);
+   int ip_x86 = 0;
+   int ip_PSL = 0;
+
+   POP_R11;
+
+   while (*(x86struct->PSL_code + ip_PSL) != CMD_HLT)
+   {
+      
+   }
+
+   // push("4153"); push r11
 
    if (mprotect(x86struct->x86_code, x86struct->capacity, PROT_EXEC | PROT_WRITE))
    {
@@ -31,12 +42,12 @@ int main()
 
    create_buffer_x86(&x86struct);
 
-   compile(&x86struct);
+   compile(&x86struct); // save return register
 
-   void (*prog) (void);
-   prog = (void(*) (void)) x86struct.x86_code;
+   // void (*prog) (void) = (void(*) (void)) x86struct.x86_code;
    
-   prog;
+   // prog;
    
+   $
    return 0;
 }

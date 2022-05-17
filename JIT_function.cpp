@@ -35,8 +35,6 @@ void input_PSL_from_file(FILE* ass, x86bin_code* x86struct)
 
    fscanf(ass,"%d", &(x86struct->PSL_size));
 
-  // printf("%d", CPPU->len_of_code);
-
    x86struct->PSL_code = (char*)calloc(x86struct->PSL_size, sizeof(char));
 
    fread(x86struct->PSL_code, sizeof(char), x86struct->PSL_size, ass);
