@@ -130,7 +130,7 @@ int compilation(struct Text* text_struct, struct asm_file* machine)
 
 int main()
 {
-    FILE* cmd = fopen("../fac.txt", "rb");
+    FILE* cmd = fopen("../commands.txt", "rb");
 
     if (cmd == nullptr) 
     {
