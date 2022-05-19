@@ -9,25 +9,69 @@
 #include "./Assembler_PSL/libr/Stack.h"
 
 
-#define POP_R11                                    \
-   *(x86struct->x86_code + ip_x86) = (char)(0x41); \
-   (ip_x86++);                                     \
-   *(x86struct->x86_code + ip_x86) = (char)(0x5B); \
-   (ip_x86++);                                     \
+#define PRINT_CMD_HLT                                \
+   *(x86struct->x86_code + ip_x86++) = char(0xC3);   \
+   (++ip_PSL);                                       \
 
 
-
-#define PUSH_R11                                   \
-   *(x86struct->x86_code + ip_x86) = (char)(0x41); \
-   (ip_x86++);                                     \
-   *(x86struct->x86_code + ip_x86) = (char)(0x53); \
-   (ip_x86++);                                     \
+#define SAVE_RAX                                    \
+   *(x86struct->x86_code + ip_x86++) = (char)0x49;  \
+   *(x86struct->x86_code + ip_x86++) = (char)0x89;  \
+   *(x86struct->x86_code + ip_x86++) = (char)0xC4;  \
 
 
-// pop 0x415F push 0x4157 --- r15  
+#define SAVE_RDX                                   \
+   *(x86struct->x86_code + ip_x86++) = (char)0x49; \
+   *(x86struct->x86_code + ip_x86++) = (char)0x89; \
+   *(x86struct->x86_code + ip_x86++) = (char)0xD5; \
 
-const int Page_size    = 4096;
-const int Max_x86_cmd_size = 5; // if something went wrong, resize more
+
+#define SAVE_RCX                                   \
+   *(x86struct->x86_code + ip_x86++) = (char)0x49; \
+   *(x86struct->x86_code + ip_x86++) = (char)0x89; \
+   *(x86struct->x86_code + ip_x86++) = (char)0xDE; \
+
+
+#define SAVE_RBX                                   \
+   *(x86struct->x86_code + ip_x86++) = (char)0x49; \
+   *(x86struct->x86_code + ip_x86++) = (char)0x89; \
+   *(x86struct->x86_code + ip_x86++) = (char)0xCF; \
+
+#define RET_RAX                                    \
+   *(x86struct->x86_code + ip_x86++) = (char)0x4C; \
+   *(x86struct->x86_code + ip_x86++) = (char)0x89; \
+   *(x86struct->x86_code + ip_x86++) = (char)0xE0; \
+
+
+#define RET_RDX                                     \
+   *(x86struct->x86_code + ip_x86++) = (char)0x4C;  \
+   *(x86struct->x86_code + ip_x86++) = (char)0x89;  \
+   *(x86struct->x86_code + ip_x86++) = (char)0xEA;  \
+
+
+#define RET_RCX                                    \
+   *(x86struct->x86_code + ip_x86++) = (char)0x4C; \
+   *(x86struct->x86_code + ip_x86++) = (char)0x89; \
+   *(x86struct->x86_code + ip_x86++) = (char)0xF3; \
+
+
+#define RET_RBX                                    \
+   *(x86struct->x86_code + ip_x86++) = (char)0x49; \
+   *(x86struct->x86_code + ip_x86++) = (char)0x89; \
+   *(x86struct->x86_code + ip_x86++) = (char)0xF9; \
+
+
+#define SAVE_RSP                                   \
+   *(x86struct->x86_code + ip_x86++) = (char)0x55; \
+   *(x86struct->x86_code + ip_x86++) = (char)0x48; \
+   *(x86struct->x86_code + ip_x86++) = (char)0x89; \
+   *(x86struct->x86_code + ip_x86++) = (char)0xE5; \
+
+
+const int Page_size           = 4096;
+const int Max_x86_cmd_size    = 100; // if something went wrong, resize more
+const int Addr_array_capacity = 100;
+
 
 typedef struct x86bin_code
 {
@@ -37,14 +81,17 @@ typedef struct x86bin_code
    int PSL_size = 0;
    size_t capacity = 0;
 
+   int  number_of_adress;
+   int* x86_code_adress ;
+   int* PSL_code_adress ;
 
 }x86bin_code;
 
 
 int check_PSL_file(FILE* PSL);
 
-void input_PSL_from_file(FILE* ass, x86bin_code* x86struct);
+void x86bin_code_con(FILE* ass, x86bin_code* x86struct);
 
-int create_buffer_x86(x86bin_code* x86struct);
+int compile(x86bin_code* x86struct);
 
 #endif

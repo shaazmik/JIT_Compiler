@@ -119,7 +119,6 @@ int compilation(struct Text* text_struct, struct asm_file* machine)
 
             /*else*/ printf( "Error! Wrong command on %d line\n", j + 1 );
         }
-
     }
 
     machine->len_of_code = ip;

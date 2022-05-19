@@ -1,3 +1,9 @@
-PUSH [5]
-PUSH [rax]
+IN
+POP ax
+IN
+POP bx
+IN
+POP cx
+PUSH 14
+SHOW
 HLT

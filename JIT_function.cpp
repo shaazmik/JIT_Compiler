@@ -29,24 +29,20 @@ int check_PSL_file(FILE* PSL)
 
 
 
-void input_PSL_from_file(FILE* ass, x86bin_code* x86struct)
+void x86bin_code_con(FILE* ass, x86bin_code* x86struct)
 {
    assert(x86struct != nullptr);
+
+   x86struct->x86_code_adress = (int*)calloc(Addr_array_capacity, sizeof(int));
+   x86struct->PSL_code_adress = (int*)calloc(Addr_array_capacity, sizeof(int));
+
 
    fscanf(ass,"%d", &(x86struct->PSL_size));
 
    x86struct->PSL_code = (char*)calloc(x86struct->PSL_size, sizeof(char));
 
    fread(x86struct->PSL_code, sizeof(char), x86struct->PSL_size, ass);
-}
-
-int create_buffer_x86(x86bin_code* x86struct)
-{
-   assert(x86struct != nullptr);
 
    x86struct->capacity  = x86struct->PSL_size * Max_x86_cmd_size;
-
    x86struct->x86_code  = (char*)aligned_alloc(4096, x86struct->capacity);
-
-   return 0;
 }
