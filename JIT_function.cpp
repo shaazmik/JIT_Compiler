@@ -125,3 +125,48 @@ void push_sqrt_addr(char* x86_code)
 
    *(unsigned long*)(x86_code) = (unsigned long)p_sqrt;
 }
+
+int compile(x86bin_code* x86struct)
+{
+   assert(x86struct != nullptr); 
+   
+   int ip_x86 = 0;
+   int ip_PSL = 0;
+   x86struct->number_of_ip = 0;
+
+   while (*(x86struct->PSL_code + ip_PSL) != CMD_HLT)
+   {
+      switch(x86struct->PSL_code[ip_PSL])
+      {
+
+         #define DEF_CMD_(number, name, arg, code)            \
+            case CMD_##name:                                  \
+               code;                                          \
+               break;                                         \
+
+
+         #include "./Commands_JIT.h"
+
+         default:
+            printf("Something went wrong\n");
+            fprintf(stderr, "%d\n", ip_PSL);
+            abort();
+            break;
+            
+         #undef DEF_CMD_ 
+
+      }   
+   }
+
+   PRINT_CMD_HLT;
+
+   x86struct->x86_size = ip_x86;
+
+   if (mprotect(x86struct->x86_code, x86struct->capacity, PROT_EXEC | PROT_WRITE))
+   {
+      perror("Can't make mprotect\n");
+      abort();
+   }
+
+   return 0;
+}
