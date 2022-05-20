@@ -304,31 +304,6 @@ DEF_CMD_(0x0D, JMP_POINTER, 1,
 )
 
 
-// DEF_CMD_(0x0D, JMP_POINTER, 1, 
-// {
-//     PUT_IP;
-
-//     ip_PSL++;
-//     *(x86struct->x86_code + ip_x86++) = (char)0xEB; //jmp short
-
-//     int jmp_ip = *(int*)(x86struct->PSL_code + ip_PSL);
-
-//     if (x86struct->step != 0)
-//     {
-//         int cell   = find_ip(x86struct->PSL_code_address, jmp_ip, x86struct->number_of_ip);
-
-//         if (cell != -1)
-//         {
-//             *(x86struct->x86_code + ip_x86) = (unsigned char)(x86struct->x86_code_address[cell] - ip_x86 - 1);
-//         }
-
-//     }
-
-//     ip_PSL += sizeof(int) / sizeof(char);;
-//     ip_x86++;
-// }
-// )
-
 DEF_CMD_(0x1D, JE_POINTER, 1,
 {
     PUT_IP;
