@@ -116,6 +116,7 @@ typedef struct x86bin_code
    char* PSL_code;
 
    int PSL_size = 0;
+   int x86_size = 0;
    size_t capacity = 0;
 
    int step = 0;
@@ -135,5 +136,6 @@ int compile(x86bin_code* x86struct);
 
 int find_ip(int* PSL_code_address, int cur_ip, int number_of_ip);
 
-void print_x86_file(char* x86_code, int capacity);
+void print_x86_file(char* x86_code, int x86_size);
+
 #endif

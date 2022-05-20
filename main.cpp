@@ -64,6 +64,8 @@ int compile(x86bin_code* x86struct)
 
    PRINT_CMD_HLT;
 
+   x86struct->x86_size = ip_x86;
+
    if (mprotect(x86struct->x86_code, x86struct->capacity, PROT_EXEC | PROT_WRITE))
    {
       perror("Can't make mprotect\n");
@@ -91,7 +93,7 @@ int main()
 
    COMPILE;
 
-   print_x86_file(x86struct.x86_code, x86struct.capacity);   
+   print_x86_file(x86struct.x86_code, x86struct.x86_size);   
 
    void (*prog) (void) = (void(*) (void)) x86struct.x86_code;
 

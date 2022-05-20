@@ -1,15 +1,12 @@
-IN ;  n - число
+IN
 POP ax
 PUSH 1
-POP bx ; bx - наше текущее произведение
-PUSH ax
-PUSH 0
-JB :negative
+POP bx
 CALL :factorial
 PUSH bx
 SHOW
-HLT
-:factorial 
+JMP :end
+:factorial
 PUSH ax
 PUSH 2
 JB :vixod
@@ -25,9 +22,5 @@ CALL :factorial
 RET
 :vixod
 RET
-:negative
-PUSH -1
-POP bx
-PUSH bx
-SHOW
+:end
 HLT

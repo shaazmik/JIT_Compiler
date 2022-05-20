@@ -162,11 +162,13 @@ DEF_CMD_(0x07, SUB, 0,
 
     ip_PSL++;
 
-    POP_RDI;
     POP_RSI;
+    POP_RDI;
+
     *(x86struct->x86_code + ip_x86++) = (char)(0x48);
     *(x86struct->x86_code + ip_x86++) = (char)(0x29);
     *(x86struct->x86_code + ip_x86++) = (char)(0xF7);
+    
     PUSH_RDI;
 
     //pop rdi       //0x5F
@@ -209,7 +211,6 @@ DEF_CMD_(0x09, DIV, 0,
     ip_PSL++;
 
     SAVE_RAX;
-    SAVE_RDX;
     SAVE_RCX;
 
     *(x86struct->x86_code + ip_x86++) = (char)0x59; // pop rcx 
@@ -224,7 +225,6 @@ DEF_CMD_(0x09, DIV, 0,
 
     RET_RAX;
     RET_RCX;
-    RET_RDX;
 }
 )
 
@@ -240,13 +240,15 @@ DEF_CMD_(0x16, SHOW, 0,
     
     (++ip_PSL);
  
+    *(x86struct->x86_code + ip_x86++) = (char)(0x5F);       //pop rdi
+
     *(x86struct->x86_code + ip_x86++) = (char)(0x41);       //mov r10,...
     *(x86struct->x86_code + ip_x86++) = (char)(0xBA);
 
     push_show_addr(x86struct->x86_code + ip_x86);           //mov r10, address
     ip_x86 += 4;
 
-    *(x86struct->x86_code + ip_x86++) = (char)(0x5F);      //pop rdi
+
 
     SAVE_RAX;
     SAVE_RBX;
@@ -270,16 +272,17 @@ DEF_CMD_(0x17, IN, 0,
 
     ip_PSL++;
 
+    SAVE_RAX;
+    SAVE_RBX;
+    SAVE_RCX;
+    SAVE_RDX;
+
     *(x86struct->x86_code + ip_x86++) = (char)(0x41);      //mov r10,...
     *(x86struct->x86_code + ip_x86++) = (char)(0xBA);
 
     push_in_addr(x86struct->x86_code + ip_x86);            //mov r10, address
     ip_x86 += 4;
 
-    SAVE_RAX;
-    SAVE_RBX;
-    SAVE_RCX;
-    SAVE_RDX;
 
     SAVE_RSP;
     *(x86struct->x86_code + ip_x86++) = (char)0x48; 
@@ -338,8 +341,8 @@ DEF_CMD_(0x1D, JE_POINTER, 1,
 
     ip_PSL++;
 
-    POP_RDI;
     POP_RSI;
+    POP_RDI;
     CMP_RDI_RSI;
 
     *(x86struct->x86_code + ip_x86++) = (char)0x74;  //je
@@ -370,9 +373,10 @@ DEF_CMD_(0x2D, JNE_POINTER, 1,
 {
     PUT_IP;
 
-    POP_RDI;
     POP_RSI;
+    POP_RDI;
     CMP_RDI_RSI;
+
 
     ip_PSL++;
     *(x86struct->x86_code + ip_x86++) = (char)0x75;
@@ -400,8 +404,8 @@ DEF_CMD_(0x3D, JA_POINTER, 1,
 {
     PUT_IP;
 
-    POP_RDI;
     POP_RSI;
+    POP_RDI;
     CMP_RDI_RSI;
 
     ip_PSL++;
@@ -430,9 +434,10 @@ DEF_CMD_(0x4D, JB_POINTER, 1,
 {
     PUT_IP;
 
-    POP_RDI;
     POP_RSI;
+    POP_RDI;
     CMP_RDI_RSI;
+
 
     ip_PSL++;
     *(x86struct->x86_code + ip_x86++) = (char)0x72;
@@ -460,8 +465,25 @@ DEF_CMD_(0x5D, CALL_POINTER, 1,
 {
     PUT_IP;
 
+    ip_PSL++;
+    
     *(x86struct->x86_code + ip_x86++) = (char)0xE8; //adress 4 byte
 
+    int jmp_ip = *(int*)(x86struct->PSL_code + ip_PSL);
+
+    if (x86struct->step != 0)
+    {
+        int cell   = find_ip(x86struct->PSL_code_address, jmp_ip, x86struct->number_of_ip);
+
+        if (cell != -1)
+        {
+            *(int*)(x86struct->x86_code + ip_x86) = (int)(x86struct->x86_code_address[cell] - ip_x86 - 4 );
+        }
+
+    }
+
+    ip_PSL += 4;
+    ip_x86 += 4;
 }
 )
 

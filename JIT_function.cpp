@@ -36,8 +36,8 @@ void x86bin_code_con(FILE* ass, x86bin_code* x86struct)
    x86struct->x86_code_address  = (int*)calloc(Addr_array_capacity, sizeof(int));
    x86struct->PSL_code_address  = (int*)calloc(Addr_array_capacity, sizeof(int));
    x86struct->number_of_ip      = 0;
-   
-   x86struct->step = 0;
+   x86struct->x86_size          = 0;
+   x86struct->step              = 0;
 
    fscanf(ass,"%d", &(x86struct->PSL_size));
 
@@ -61,7 +61,7 @@ int find_ip(int* PSL_code_address, int cur_ip, int number_of_ip)
    return cell;
 }
 
-void print_x86_file(char* x86_code, int capacity)
+void print_x86_file(char* x86_code, int x86_size)
 {
    FILE* x86_file = fopen("x86_file.bin", "wb");
 
@@ -70,21 +70,15 @@ void print_x86_file(char* x86_code, int capacity)
       fprintf(stderr, "Can't be opened file x86_file.bin\n");
    }
 
-   int i = 0;
 
-   while ((*(x86_code + i) != (char)0xC3) && (i < capacity))
+   for (int i = 0; i < x86_size; i++ )
    {
       fprintf(x86_file, "%c", *(x86_code + i));
-      i++;
    }
 
-   if (*(x86_code + i) != (char)0xC3)
+   if (*(x86_code + x86_size - 1) != (char)0xC3)
    {
-      fprintf(stderr, "END OF FILE NOT FOUND i = %d capacity = %d\n", i, capacity);
-   }
-   else
-   {
-      fprintf(x86_file, "%c", (char)0xC3);
+      fprintf(stderr, "END OF FILE NOT FOUND size = %d\n", x86_size);
    }
 
    fclose(x86_file);
