@@ -1,26 +1,67 @@
 IN
 POP ax
-PUSH 1
+IN
 POP bx
-CALL :factorial
+IN
+POP cx
+PUSH ax
+PUSH 0
+JE :linear
 PUSH bx
-SHOW
-JMP :end
-:factorial
-PUSH ax
-PUSH 2
-JB :vixod
-PUSH ax
 PUSH bx
 MUL
-POP bx
+PUSH 4
 PUSH ax
-PUSH 1
+PUSH cx
+MUL
+MUL
 SUB
-POP ax
-CALL :factorial
-RET
-:vixod
-RET
-:end
+POP dx
+PUSH dx
+PUSH 0
+JB :ans1
+PUSH dx
+SQRT
+POP dx
+PUSH dx
+PUSH bx
+SUB
+PUSH 2
+PUSH ax
+MUL
+DIV
+SHOW
+PUSH dx
+PUSH -1
+MUL
+PUSH bx
+SUB
+PUSH 2
+PUSH ax
+MUL
+DIV
+SHOW
+JMP :exit
+:linear
+PUSH bx
+PUSH 0
+JNE :ans2
+PUSH cx
+PUSH 0
+JNE :ans1
+PUSH 1000000;БЕСКОНЕЧНО КОРНЕЙ
+SHOW
+JMP :exit
+:ans1
+PUSH 0; 0 КОРНЕЙ
+SHOW
+JMP :exit
+:ans2
+PUSH bx
+PUSH -1
+PUSH cx
+MUL
+DIV
+SHOW
+:exit
 HLT

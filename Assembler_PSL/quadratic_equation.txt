@@ -32,11 +32,11 @@ JA :two_roots
     PUSH bx
     DIV
     SHOW
-    HLT
+    JMP :exit
 :no_roots
     PUSH 0
     SHOW
-    HLT
+    JMP :exit
 :two_roots
     PUSH 2
     SHOW
@@ -58,4 +58,5 @@ JA :two_roots
     PUSH 2
     DIV
     SHOW
-    HLT
+:exit
+HLT

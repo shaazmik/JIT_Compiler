@@ -68,22 +68,7 @@ DEF_CMD_(0x12, PUSH_X, 1,
 }
 )
 
-DEF_CMD_(0x13, PUSH_MEM, 1,
-{   
-    // !push [rax]!
 
-    // ?????? name of bss buffer + rax offset
-    //mov r8, [rax]  
-    //push rbx             
-}
-)
-
-
-DEF_CMD_(0x21, POP, 1, 
-{
-    //POP 5
-}
-)
 
 
 DEF_CMD_(0x22, POP_X, 1, 
@@ -128,13 +113,6 @@ DEF_CMD_(0x22, POP_X, 1,
 )
 
 
-DEF_CMD_(0x23, POP_MEM, 1, 
-{
-    // ???
-}
-)
-
-
 DEF_CMD_(0x06, ADD, 0,
 {
     PUT_IP;
@@ -143,9 +121,11 @@ DEF_CMD_(0x06, ADD, 0,
 
     POP_RDI;
     POP_RSI;
+
     *(x86struct->x86_code + ip_x86++) = (char)(0x48);
-    *(x86struct->x86_code + ip_x86++) = (char)(0x01);
+    *(x86struct->x86_code + ip_x86++) = (char)(0x01);   //ADD RDI, RSI
     *(x86struct->x86_code + ip_x86++) = (char)(0xF7);
+
     PUSH_RDI;
 
     // pop rdi       //0x5F
@@ -166,7 +146,7 @@ DEF_CMD_(0x07, SUB, 0,
     POP_RDI;
 
     *(x86struct->x86_code + ip_x86++) = (char)(0x48);
-    *(x86struct->x86_code + ip_x86++) = (char)(0x29);
+    *(x86struct->x86_code + ip_x86++) = (char)(0x29);  //SUB RDI, RSI
     *(x86struct->x86_code + ip_x86++) = (char)(0xF7);
 
     PUSH_RDI;
@@ -193,10 +173,10 @@ DEF_CMD_(0x08, MUL, 0,
     *(x86struct->x86_code + ip_x86++) = (char)0x58; // pop rax
 
     *(x86struct->x86_code + ip_x86++) = (char)0x48;
-    *(x86struct->x86_code + ip_x86++) = (char)0xF7; // mul rdx
-    *(x86struct->x86_code + ip_x86++) = (char)0xE2;
+    *(x86struct->x86_code + ip_x86++) = (char)0xF7; // imul rdx
+    *(x86struct->x86_code + ip_x86++) = (char)0xEA;
 
-    *(x86struct->x86_code + ip_x86++) = (char)0x50; // push rax
+    PUSH_RAX;
 
     RET_RAX;
     RET_RDX;
@@ -212,19 +192,24 @@ DEF_CMD_(0x09, DIV, 0,
 
     SAVE_RAX;
     SAVE_RCX;
+    SAVE_RDX;
 
     *(x86struct->x86_code + ip_x86++) = (char)0x59; // pop rcx 
 
     *(x86struct->x86_code + ip_x86++) = (char)0x58; // pop rax
 
     *(x86struct->x86_code + ip_x86++) = (char)0x48;
-    *(x86struct->x86_code + ip_x86++) = (char)0xF7; // div rcx
-    *(x86struct->x86_code + ip_x86++) = (char)0xF1;
+    *(x86struct->x86_code + ip_x86++) = (char)0x99;
 
-    *(x86struct->x86_code + ip_x86++) = (char)0x50; // push rax
+    *(x86struct->x86_code + ip_x86++) = (char)0x48;
+    *(x86struct->x86_code + ip_x86++) = (char)0xF7; // idiv rcx
+    *(x86struct->x86_code + ip_x86++) = (char)0xF9;
+
+    PUSH_RAX;
 
     RET_RAX;
     RET_RCX;
+    RET_RDX;
 }
 )
 
@@ -237,8 +222,7 @@ DEF_CMD_(0x16, SHOW, 0,
  
     *(x86struct->x86_code + ip_x86++) = (char)(0x5F);       //pop rdi
 
-    *(x86struct->x86_code + ip_x86++) = (char)(0x41);       //mov r10,...
-    *(x86struct->x86_code + ip_x86++) = (char)(0xBA);
+    MOV_R10;
 
     push_show_addr(x86struct->x86_code + ip_x86);           //mov r10, address
     ip_x86 += sizeof(int) / sizeof(char);;
@@ -250,9 +234,7 @@ DEF_CMD_(0x16, SHOW, 0,
     SAVE_RCX;
     SAVE_RDX;
 
-    *(x86struct->x86_code + ip_x86++) = (char)(0x41);      //call r10
-    *(x86struct->x86_code + ip_x86++) = (char)(0xFF);
-    *(x86struct->x86_code + ip_x86++) = (char)(0xD2);
+    CALL_R10;
     
     RET_RAX;
     RET_RBX;
@@ -272,30 +254,21 @@ DEF_CMD_(0x17, IN, 0,
     SAVE_RCX;
     SAVE_RDX;
 
-    *(x86struct->x86_code + ip_x86++) = (char)(0x41);      //mov r10,...
-    *(x86struct->x86_code + ip_x86++) = (char)(0xBA);
+    MOV_R10;
 
     push_in_addr(x86struct->x86_code + ip_x86);            //mov r10, address
     ip_x86 += sizeof(int) / sizeof(char);;
 
 
     SAVE_RSP;
-    *(x86struct->x86_code + ip_x86++) = (char)0x48; 
-    *(x86struct->x86_code + ip_x86++) = (char)0x83;   // and rsp, 0xFFFFFFFF0 
-    *(x86struct->x86_code + ip_x86++) = (char)0xE4;
-    *(x86struct->x86_code + ip_x86++) = (char)0xF0; 
 
-    *(x86struct->x86_code + ip_x86++) = (char)(0x41);      //call r10
-    *(x86struct->x86_code + ip_x86++) = (char)(0xFF);
-    *(x86struct->x86_code + ip_x86++) = (char)(0xD2);    
+    STACK_ALIGNMENT_16;
+
+    CALL_R10;
     
-   *(x86struct->x86_code + ip_x86++) = (char)0x48; 
-   *(x86struct->x86_code + ip_x86++) = (char)0x89;    //mov rsp,rbp ; 
-   *(x86struct->x86_code + ip_x86++) = (char)0xEC;
+    RETURN_RSP;
 
-    *(x86struct->x86_code + ip_x86++) = (char)0x5D;   // pop rbp
-
-    *(x86struct->x86_code + ip_x86++) = (char)0x50;     // push rax
+    PUSH_RAX;
 
     RET_RAX;
     RET_RBX;
@@ -310,7 +283,7 @@ DEF_CMD_(0x0D, JMP_POINTER, 1,
     PUT_IP;
 
     ip_PSL++;
-    *(x86struct->x86_code + ip_x86++) = (char)0xEB; //jmp
+    *(x86struct->x86_code + ip_x86++) = (char)0xE9; //jmp
 
     int jmp_ip = *(int*)(x86struct->PSL_code + ip_PSL);
 
@@ -320,15 +293,41 @@ DEF_CMD_(0x0D, JMP_POINTER, 1,
 
         if (cell != -1)
         {
-            *(x86struct->x86_code + ip_x86) = (unsigned char)(x86struct->x86_code_address[cell] - ip_x86 - 1);
+           *(int*)(x86struct->x86_code + ip_x86) = (int)(x86struct->x86_code_address[cell] - ip_x86 - 4);
         }
 
     }
 
-    ip_PSL += sizeof(int) / sizeof(char);;
-    ip_x86++;
+    ip_PSL += sizeof(int) / sizeof(char);
+    ip_x86 += sizeof(int) / sizeof(char);
 }
 )
+
+
+// DEF_CMD_(0x0D, JMP_POINTER, 1, 
+// {
+//     PUT_IP;
+
+//     ip_PSL++;
+//     *(x86struct->x86_code + ip_x86++) = (char)0xEB; //jmp short
+
+//     int jmp_ip = *(int*)(x86struct->PSL_code + ip_PSL);
+
+//     if (x86struct->step != 0)
+//     {
+//         int cell   = find_ip(x86struct->PSL_code_address, jmp_ip, x86struct->number_of_ip);
+
+//         if (cell != -1)
+//         {
+//             *(x86struct->x86_code + ip_x86) = (unsigned char)(x86struct->x86_code_address[cell] - ip_x86 - 1);
+//         }
+
+//     }
+
+//     ip_PSL += sizeof(int) / sizeof(char);;
+//     ip_x86++;
+// }
+// )
 
 DEF_CMD_(0x1D, JE_POINTER, 1,
 {
@@ -340,7 +339,8 @@ DEF_CMD_(0x1D, JE_POINTER, 1,
     POP_RDI;
     CMP_RDI_RSI;
 
-    *(x86struct->x86_code + ip_x86++) = (char)0x74;  //je
+    *(x86struct->x86_code + ip_x86++) = (char)0x0F;  //je
+    *(x86struct->x86_code + ip_x86++) = (char)0x84;
 
     int jmp_ip = *(int*)(x86struct->PSL_code + ip_PSL);
 
@@ -350,7 +350,7 @@ DEF_CMD_(0x1D, JE_POINTER, 1,
 
         if (cell != -1)
         {
-            *(x86struct->x86_code + ip_x86) = (unsigned char)(x86struct->x86_code_address[cell] - ip_x86 - 1);
+           *(int*)(x86struct->x86_code + ip_x86) = (int)(x86struct->x86_code_address[cell] - ip_x86 - 4);
         }
 
     }
@@ -359,8 +359,8 @@ DEF_CMD_(0x1D, JE_POINTER, 1,
         *(x86struct->x86_code + ip_x86) = (char)0x00;
     }
 
-    ip_PSL += sizeof(int) / sizeof(char);;
-    ip_x86++;
+    ip_PSL += sizeof(int) / sizeof(char);
+    ip_x86 += sizeof(int) / sizeof(char);
 }
 )
 
@@ -389,7 +389,7 @@ DEF_CMD_(0x2D, JNE_POINTER, 1,
 
     }
 
-    ip_PSL += sizeof(int) / sizeof(char);;
+    ip_PSL += sizeof(int) / sizeof(char);
     ip_x86++;
 }
 )
@@ -404,7 +404,8 @@ DEF_CMD_(0x3D, JA_POINTER, 1,
     CMP_RDI_RSI;
 
     ip_PSL++;
-    *(x86struct->x86_code + ip_x86++) = (char)0x77;
+    *(x86struct->x86_code + ip_x86++) = (char)0x0F;  //near jg 
+    *(x86struct->x86_code + ip_x86++) = (char)0x8F;
 
     int jmp_ip = *(int*)(x86struct->PSL_code + ip_PSL);
 
@@ -414,13 +415,11 @@ DEF_CMD_(0x3D, JA_POINTER, 1,
 
         if (cell != -1)
         {
-            *(x86struct->x86_code + ip_x86) = (unsigned char)(x86struct->x86_code_address[cell] - ip_x86 - 1);
+           *(int*)(x86struct->x86_code + ip_x86) = (int)(x86struct->x86_code_address[cell] - ip_x86 - 4);
         }
-
     }
-
-    ip_PSL += sizeof(int) / sizeof(char);;
-    ip_x86++;
+    ip_PSL += sizeof(int) / sizeof(char);
+    ip_x86 += sizeof(int) / sizeof(char);
 }
 )
 
@@ -435,7 +434,8 @@ DEF_CMD_(0x4D, JB_POINTER, 1,
 
 
     ip_PSL++;
-    *(x86struct->x86_code + ip_x86++) = (char)0x72;
+    *(x86struct->x86_code + ip_x86++) = (char)0x0F;  //jl
+    *(x86struct->x86_code + ip_x86++) = (char)0x8C;
 
     int jmp_ip = *(int*)(x86struct->PSL_code + ip_PSL);
 
@@ -445,13 +445,13 @@ DEF_CMD_(0x4D, JB_POINTER, 1,
 
         if (cell != -1)
         {
-            *(x86struct->x86_code + ip_x86) = (unsigned char)(x86struct->x86_code_address[cell] - ip_x86 - 1);
+           *(int*)(x86struct->x86_code + ip_x86) = (int)(x86struct->x86_code_address[cell] - ip_x86 - 4);        
         }
 
     }
 
-    ip_PSL += sizeof(int) / sizeof(char);;
-    ip_x86++;
+    ip_PSL += sizeof(int) / sizeof(char);
+    ip_x86 += sizeof(int) / sizeof(char);
 }
 )
 
@@ -472,7 +472,7 @@ DEF_CMD_(0x5D, CALL_POINTER, 1,
 
         if (cell != -1)
         {
-            *(int*)(x86struct->x86_code + ip_x86) = (int)(x86struct->x86_code_address[cell] - ip_x86 - 4 );
+            *(int*)(x86struct->x86_code + ip_x86) = (int)(x86struct->x86_code_address[cell] - ip_x86 - 4);
         }
 
     }
@@ -500,8 +500,7 @@ DEF_CMD_(0x10, SQRT, 0,
 
     POP_RDI;
 
-    *(x86struct->x86_code + ip_x86++) = (char)(0x41);        //mov r10,...
-    *(x86struct->x86_code + ip_x86++) = (char)(0xBA);
+    MOV_R10;
 
     push_sqrt_addr(x86struct->x86_code + ip_x86);            //mov r10, address
     ip_x86 += sizeof(int) / sizeof(char);
@@ -511,11 +510,9 @@ DEF_CMD_(0x10, SQRT, 0,
     SAVE_RCX;
     SAVE_RDX;
 
-    *(x86struct->x86_code + ip_x86++) = (char)(0x41);       //call r10
-    *(x86struct->x86_code + ip_x86++) = (char)(0xFF);
-    *(x86struct->x86_code + ip_x86++) = (char)(0xD2);
+    CALL_R10;
 
-    *(x86struct->x86_code + ip_x86++) = (char)0x50;
+    PUSH_RAX;
 
     RET_RAX;
     RET_RBX;

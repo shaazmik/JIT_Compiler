@@ -4,14 +4,11 @@
 #include "./JIT_compiler.h"
 #include <ctime>
 
-int sqrt_r(int n)
-{
-   return 0;
-}
 
 int compile(x86bin_code* x86struct)
 {
    assert(x86struct != nullptr); 
+   
    int ip_x86 = 0;
    int ip_PSL = 0;
    x86struct->number_of_ip = 0;
@@ -31,6 +28,7 @@ int compile(x86bin_code* x86struct)
 
          default:
             printf("Something went wrong\n");
+            fprintf(stderr, "%d\n", ip_PSL);
             abort();
             break;
             
