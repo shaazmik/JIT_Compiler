@@ -99,7 +99,6 @@ DEF_CMD_(0x56, NOP, 1,
 { 
     int argument = *(int*)( &(CPPU->code[ip + 1]) );
 
-    fprintf(stderr,"NOP at %x: %x\n", ip,  argument);
     ip += 5;
 }
 )

@@ -8,7 +8,6 @@ int just_do_it(struct CPU* CPPU)
 
    while (*(char*)(&CPPU->code[ip]) != CMD_HLT)
    {
-      fprintf(stderr, "CPU CODE [IP = %x] = %x\n", ip, *(char*)(&CPPU->code[ip]));
       switch(CPPU->code[ip])
       {
          
