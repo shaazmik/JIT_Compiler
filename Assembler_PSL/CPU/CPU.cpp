@@ -1,4 +1,5 @@
 #include "./CPU.h"
+#include <ctime>
 
 
 int just_do_it(struct CPU* CPPU)
@@ -34,7 +35,7 @@ int just_do_it(struct CPU* CPPU)
 
 int main()
 {
-   system("mode con cols=100 lines=30");
+   // system("mode con cols=100 lines=30");
 
    struct CPU CPPU = {};
 
@@ -57,7 +58,11 @@ int main()
 
    just_do_it(&CPPU);
 
-   stack_destructor( &(CPPU.stk) );
+   stack_destructor( &(CPPU.stk) );                                        
    stack_destructor( &(CPPU.stk_back) );
 
+   u_int64_t time_end  = clock();
+   fprintf(stderr, "The program lasted = %f seconds\n", ((float)time_end / CLOCKS_PER_SEC));   
+
+   return 0;
 }

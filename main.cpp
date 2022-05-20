@@ -2,34 +2,11 @@
 #define $$ fprintf(stderr, "\nbag\n");
 
 #include "./JIT_compiler.h"
+#include <ctime>
 
-
-void show(int value)
+int sqrt_r(int n)
 {
-   printf("%d\n", value);
-}
-
-int in(void)
-{      
-   int value = 0;
-
-   scanf("%d", &value);
-       
-   return value;
-}
-
-void push_show_addr(char* x86_code)
-{
-   assert (x86_code != nullptr);
-
-   *(unsigned long*)(x86_code) = (unsigned long)show;
-}
-
-void push_in_addr(char* x86_code)
-{
-   assert (x86_code != nullptr);
-
-   *(unsigned long*)(x86_code) = (unsigned long)in;
+   return 0;
 }
 
 int compile(x86bin_code* x86struct)
@@ -97,17 +74,13 @@ int main()
 
    void (*prog) (void) = (void(*) (void)) x86struct.x86_code;
 
-   asm("push rbx\n\t"
-       "push r12\n\t"
-       "push r13\n\t"
-       "push r14\n\t"
-       "push r15\n\t");
-   prog();
-   asm("pop r15\n\t"
-       "pop r14\n\t"
-       "pop r13\n\t"
-       "pop r12\n\t"
-       "pop rbx\n\t");
+   u_int64_t time_start = clock();
+
+   LAUNCH_PROGRAM;
+
+   u_int64_t time_end  = clock();
+    
+   fprintf(stderr, "The program lasted = %f seconds\n", ((float)(time_end - time_start)) / CLOCKS_PER_SEC);
 
    return 0;
 }

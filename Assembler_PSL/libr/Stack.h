@@ -18,7 +18,9 @@
 
 //!*
 
-#define DEBUG_MOD
+//#define DEBUG_MOD
+//#define PROTECTION
+
 
 //!*
 

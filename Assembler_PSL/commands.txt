@@ -1,39 +1,26 @@
-PUSH 1
+IN
 POP ax
 PUSH 1
 POP bx
-IN
-POP cx
-PUSH 2
-POP dx
-PUSH cx
-PUSH 2
-JA :konec1
-PUSH ax
+CALL :factorial
+PUSH bx
 SHOW
 JMP :end
-:konec1
-CALL :func
+:factorial
 PUSH ax
-SHOW
-JMP :end
-:func
-PUSH dx
-PUSH 1
-ADD
-POP dx
+PUSH 2
+JB :vixod
 PUSH ax
 PUSH bx
-ADD
-PUSH ax
+MUL
 POP bx
+PUSH ax
+PUSH 1
+SUB
 POP ax
-PUSH dx
-PUSH cx
-JNE :konec2
+CALL :factorial
 RET
-:konec2
-CALL :func
+:vixod
 RET
 :end
 HLT

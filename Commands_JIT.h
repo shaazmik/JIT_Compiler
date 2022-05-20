@@ -168,7 +168,7 @@ DEF_CMD_(0x07, SUB, 0,
     *(x86struct->x86_code + ip_x86++) = (char)(0x48);
     *(x86struct->x86_code + ip_x86++) = (char)(0x29);
     *(x86struct->x86_code + ip_x86++) = (char)(0xF7);
-    
+
     PUSH_RDI;
 
     //pop rdi       //0x5F
@@ -228,11 +228,6 @@ DEF_CMD_(0x09, DIV, 0,
 }
 )
 
-DEF_CMD_(0x10, SQRT, 0,
-{
-
-}
-)
 
 DEF_CMD_(0x16, SHOW, 0, 
 {
@@ -246,7 +241,7 @@ DEF_CMD_(0x16, SHOW, 0,
     *(x86struct->x86_code + ip_x86++) = (char)(0xBA);
 
     push_show_addr(x86struct->x86_code + ip_x86);           //mov r10, address
-    ip_x86 += 4;
+    ip_x86 += sizeof(int) / sizeof(char);;
 
 
 
@@ -281,7 +276,7 @@ DEF_CMD_(0x17, IN, 0,
     *(x86struct->x86_code + ip_x86++) = (char)(0xBA);
 
     push_in_addr(x86struct->x86_code + ip_x86);            //mov r10, address
-    ip_x86 += 4;
+    ip_x86 += sizeof(int) / sizeof(char);;
 
 
     SAVE_RSP;
@@ -330,7 +325,7 @@ DEF_CMD_(0x0D, JMP_POINTER, 1,
 
     }
 
-    ip_PSL += 4;
+    ip_PSL += sizeof(int) / sizeof(char);;
     ip_x86++;
 }
 )
@@ -364,7 +359,7 @@ DEF_CMD_(0x1D, JE_POINTER, 1,
         *(x86struct->x86_code + ip_x86) = (char)0x00;
     }
 
-    ip_PSL += 4;
+    ip_PSL += sizeof(int) / sizeof(char);;
     ip_x86++;
 }
 )
@@ -394,7 +389,7 @@ DEF_CMD_(0x2D, JNE_POINTER, 1,
 
     }
 
-    ip_PSL += 4;
+    ip_PSL += sizeof(int) / sizeof(char);;
     ip_x86++;
 }
 )
@@ -424,7 +419,7 @@ DEF_CMD_(0x3D, JA_POINTER, 1,
 
     }
 
-    ip_PSL += 4;
+    ip_PSL += sizeof(int) / sizeof(char);;
     ip_x86++;
 }
 )
@@ -455,7 +450,7 @@ DEF_CMD_(0x4D, JB_POINTER, 1,
 
     }
 
-    ip_PSL += 4;
+    ip_PSL += sizeof(int) / sizeof(char);;
     ip_x86++;
 }
 )
@@ -482,8 +477,8 @@ DEF_CMD_(0x5D, CALL_POINTER, 1,
 
     }
 
-    ip_PSL += 4;
-    ip_x86 += 4;
+    ip_PSL += sizeof(int) / sizeof(char);;
+    ip_x86 += sizeof(int) / sizeof(char);;
 }
 )
 
@@ -494,5 +489,38 @@ DEF_CMD_(0x6A, RET, 0,
     ip_PSL++;
 
     *(x86struct->x86_code + ip_x86++) = (char)0xC3;
+}
+)
+
+DEF_CMD_(0x10, SQRT, 0,
+{
+    PUT_IP;
+
+    ip_PSL++;
+
+    POP_RDI;
+
+    *(x86struct->x86_code + ip_x86++) = (char)(0x41);        //mov r10,...
+    *(x86struct->x86_code + ip_x86++) = (char)(0xBA);
+
+    push_sqrt_addr(x86struct->x86_code + ip_x86);            //mov r10, address
+    ip_x86 += sizeof(int) / sizeof(char);
+
+    SAVE_RAX;
+    SAVE_RBX;
+    SAVE_RCX;
+    SAVE_RDX;
+
+    *(x86struct->x86_code + ip_x86++) = (char)(0x41);       //call r10
+    *(x86struct->x86_code + ip_x86++) = (char)(0xFF);
+    *(x86struct->x86_code + ip_x86++) = (char)(0xD2);
+
+    *(x86struct->x86_code + ip_x86++) = (char)0x50;
+
+    RET_RAX;
+    RET_RBX;
+    RET_RCX;
+    RET_RDX;
+
 }
 )

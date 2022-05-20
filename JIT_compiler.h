@@ -105,6 +105,15 @@
    *(x86struct->x86_code + ip_x86++) = (char)(0xF7);   \
 
 
+
+#define LAUNCH_PROGRAM                                                        \
+   asm("push rbx\n\t push r12\n\t push r13\n\t push r14\n\t push r15\n\t");   \
+   prog();                                                                    \
+   asm("pop r15\n\t pop r14\n\t pop r13\n\t pop r12\n\t pop rbx\n\t");        \
+
+
+
+
 const int Page_size           = 4096;
 const int Max_x86_cmd_size    = 100; // if something went wrong, resize more
 const int Addr_array_capacity = 1000;
@@ -137,5 +146,18 @@ int compile(x86bin_code* x86struct);
 int find_ip(int* PSL_code_address, int cur_ip, int number_of_ip);
 
 void print_x86_file(char* x86_code, int x86_size);
+
+void show(int value);
+
+int in(void);
+
+int p_sqrt(int value);
+
+void push_show_addr(char* x86_code);
+
+void push_in_addr(char* x86_code);
+
+void push_sqrt_addr(char* x86_code);
+
 
 #endif

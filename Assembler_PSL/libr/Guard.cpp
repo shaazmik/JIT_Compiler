@@ -113,6 +113,8 @@ int check_construct(struct pstack_info* pstack)
 
         #endif // DEBUG_MOD
     }
+
+    return OK;
 }
 
 
@@ -145,6 +147,8 @@ int check_destruct(struct pstack_info* pstack)
 
         #endif // DEBUG_MOD
     }
+
+    return OK;
 }
 
 int verification(struct pstack_info* pstack)
@@ -230,7 +234,7 @@ void dump_whisper(struct pstack_info* pstack)
     }
 
     printf("\n\n"
-           "STACK CAPACITY:      %d\n"
+           "STACK CAPACITY:      %ld\n"
            "STACK SIZE:          %d\n", pstack->pstack_capacity, pstack->pstack_size);
 
     if (pstack->pstack_error != ERROR_NULLPTR)
@@ -259,7 +263,7 @@ int dump_loud(struct pstack_info* pstack, const char* name_of_file, const char* 
     check_nullptr(pstack);
 
     printf("\n\n"
-           "STACK CAPACITY:      %d\n"
+           "STACK CAPACITY:      %ld\n"
            "STACK SIZE:          %d\n", pstack->pstack_capacity, pstack->pstack_size);
 
     if (pstack->pstack_error != ERROR_NULLPTR && pstack->pstack_error != ERROR_OUT_RANGE)
@@ -271,16 +275,16 @@ int dump_loud(struct pstack_info* pstack, const char* name_of_file, const char* 
     {
         printf("STACK HASN'T TOP ELEMENT : NULLPTR\n");
     }
-    printf("STACK STRUCT LEFT CANARY:   %ld\n",   pstack->golub_left);
-    printf("STACK STRUCT RIGHT CANARY:  %ld\n",   pstack->golub_right);
+    printf("STACK STRUCT LEFT CANARY:   %lld\n",   pstack->golub_left);
+    printf("STACK STRUCT RIGHT CANARY:  %lld\n",   pstack->golub_right);
 
-    printf("STACK LEFT CANARY:          %ld\n",
+    printf("STACK LEFT CANARY:          %lld\n",
            *(long long*)( (char*)pstack->pstack_pointer - sizeof(long long) ) );
 
-    printf("STACK RIGHT CANARY:         %ld\n",
+    printf("STACK RIGHT CANARY:         %lld\n",
            *(long long*)( (char*)pstack->pstack_pointer + sizeof(type_array) * pstack->pstack_capacity )  );
 
-    printf("STACK HASH:                 %ld\n\n",   pstack->hash_var);
+    printf("STACK HASH:                 %lld\n\n",   pstack->hash_var);
 
 
     switch(pstack->pstack_error)
@@ -357,7 +361,7 @@ void print_err_loud(int err_num, const char* name_of_file, const char* name_of_f
     fprintf(log, "Stack [Error #%d] in  file \"%s\" function \"%s\" dump alerted on \"%d\" line \n",
                                 err_num, name_of_file, name_of_function, line_number );
 
-    fprintf(log, "\n\nSTACK CAPACITY: %d\n", pstack->pstack_capacity);
+    fprintf(log, "\n\nSTACK CAPACITY: %ld\n", pstack->pstack_capacity);
     fprintf(log, "STACK SIZE: %d\n", pstack->pstack_size);
 
     if (err_num != ERROR_NULLPTR && err_num != ERROR_OUT_RANGE)
@@ -370,16 +374,16 @@ void print_err_loud(int err_num, const char* name_of_file, const char* name_of_f
         fprintf(log, "STACK HASN'T TOP ELEMENT : NULLPTR\n");
     }
 
-    fprintf(log, "STACK STRUCT LEFT CANARY:   %d\n",    pstack->golub_left);
-    fprintf(log, "STACK STRUCT RIGHT CANARY:  %d\n",  pstack->golub_right);
+    fprintf(log, "STACK STRUCT LEFT CANARY:   %lld\n",    pstack->golub_left);
+    fprintf(log, "STACK STRUCT RIGHT CANARY:  %lld\n",  pstack->golub_right);
 
-    fprintf(log, "STACK LEFT CANARY:          %ld\n",
+    fprintf(log, "STACK LEFT CANARY:          %lld\n",
            *(long long*)( (char*)pstack->pstack_pointer - sizeof(long long) ) );
 
-    fprintf(log, "STACK RIGHT CANARY:         %ld\n",
+    fprintf(log, "STACK RIGHT CANARY:         %lld\n",
            *(long long*)( (char*)pstack->pstack_pointer + sizeof(type_array) * pstack->pstack_capacity )  );
 
-    fprintf(log, "STACK HASH:                 %ld\n\n",   pstack->hash_var);
+    fprintf(log, "STACK HASH:                 %lld\n\n",   pstack->hash_var);
 
 
     fflush(log);

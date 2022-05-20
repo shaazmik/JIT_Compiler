@@ -83,3 +83,45 @@ void print_x86_file(char* x86_code, int x86_size)
 
    fclose(x86_file);
 }
+
+void show(int value)
+{
+   printf("%d\n", value);
+}
+
+int in(void)
+{      
+   int value = 0;
+
+   scanf("%d", &value);
+       
+   return value;
+}
+
+int p_sqrt(int value)
+{
+   int result = round(sqrt(value));
+
+   return result;
+}
+
+void push_show_addr(char* x86_code)
+{
+   assert (x86_code != nullptr);
+
+   *(unsigned long*)(x86_code) = (unsigned long)show;
+}
+
+void push_in_addr(char* x86_code)
+{
+   assert (x86_code != nullptr);
+
+   *(unsigned long*)(x86_code) = (unsigned long)in;
+}
+
+void push_sqrt_addr(char* x86_code)
+{
+   assert (x86_code != nullptr);
+
+   *(unsigned long*)(x86_code) = (unsigned long)p_sqrt;
+}

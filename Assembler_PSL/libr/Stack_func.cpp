@@ -19,12 +19,16 @@
 
 int stack_constructor(struct pstack_info* pstack, int pstack_user_size)
 {
+    #ifdef PROTECTION
+
     check_nullptr(pstack);
 
     if (check_construct(pstack) == ERROR_UNKNOWN)
     {
         return ERROR_UNKNOWN;
     }
+
+    #endif
 
     if (pstack_user_size < 0)
     {
@@ -66,7 +70,11 @@ int stack_constructor(struct pstack_info* pstack, int pstack_user_size)
 
     pstack->hash_var = hash_calc(pstack);
 
+    #ifdef PROTECTION
+    
     verification_stack(pstack);
+    
+    #endif
 
     return OK;
 }
@@ -98,7 +106,11 @@ int stack_pushka(struct pstack_info* pstack, type_array new_element)
 {       
     check_nullptr(pstack);
 
+    #ifdef PROTECTION
+
     verification_stack(pstack);
+
+    #endif
 
     if ((pstack->pstack_size == pstack->pstack_capacity) && (pstack->inc_counter <= Pstack_inc_max))
     {
@@ -115,7 +127,11 @@ int stack_pushka(struct pstack_info* pstack, type_array new_element)
 
     pstack->hash_var = hash_calc(pstack);
 
+    #ifdef PROTECTION
+
     verification_stack(pstack);
+
+    #endif
 
     return OK;
 }
@@ -125,15 +141,22 @@ type_array stack_popka(struct pstack_info* pstack)
 {
     check_nullptr(pstack);
 
+    #ifdef PROTECTION
+
     verification_stack(pstack);
+
+    #endif
 
     pstack->pstack_size--;
     type_array pop_result = pstack->pstack_pointer[pstack->pstack_size];
 
     pstack->hash_var = hash_calc(pstack);
 
+    #ifdef PROTECTION
 
     verification_stack(pstack);
+
+    #endif
 
     if ( (pstack->pstack_size == pstack->pstack_capacity - 2 * Pstack_multiplier) && (pstack->inc_counter > 1))
     {
@@ -210,10 +233,14 @@ int stack_destructor(struct pstack_info* pstack)
 {
     check_nullptr(pstack);
 
+    #ifdef PROTECTION
+
     if (check_destruct(pstack) == ERROR_UNKNOWN)
     {
         return ERROR_UNKNOWN;
     }
+
+    #endif
 
     free((char*)pstack->pstack_pointer - 1 * sizeof(long long));
     pstack->pstack_pointer = nullptr;
