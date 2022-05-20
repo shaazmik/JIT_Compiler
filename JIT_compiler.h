@@ -9,9 +9,12 @@
 #include "./Assembler_PSL/libr/Stack.h"
 
 
-#define PRINT_CMD_HLT                                \
-   *(x86struct->x86_code + ip_x86++) = char(0xC3);   \
-   (++ip_PSL);                                       \
+#define PRINT_CMD_HLT                                                  \
+   *(x86struct->PSL_code_address + x86struct->number_of_ip) = ip_PSL;  \
+   *(x86struct->x86_code_address + x86struct->number_of_ip) = ip_x86;  \
+   x86struct->number_of_ip++;                                          \
+   *(x86struct->x86_code + ip_x86++) = char(0xC3);                     \
+   (++ip_PSL);                                                         \
 
 
 #define SAVE_RAX                                    \
@@ -68,9 +71,43 @@
    *(x86struct->x86_code + ip_x86++) = (char)0xE5; \
 
 
+#define PUT_IP                                                         \
+   *(x86struct->PSL_code_address + x86struct->number_of_ip) = ip_PSL;  \
+   *(x86struct->x86_code_address + x86struct->number_of_ip) = ip_x86;  \
+   x86struct->number_of_ip++;                                          \
+   
+
+#define COMPILE            \
+   compile(&x86struct);    \
+   x86struct.step++;       \
+   compile(&x86struct);    \
+   
+   
+#define PUSH_RDI                                      \
+   *(x86struct->x86_code + ip_x86++) = (char)(0x57);  \
+
+
+#define POP_RDI                                        \
+   *(x86struct->x86_code + ip_x86++) = (char)(0x5F);   \
+
+
+#define PUSH_RSI                                       \
+   *(x86struct->x86_code + ip_x86++) = (char)(0x5E);   \
+
+
+#define POP_RSI                                        \
+   *(x86struct->x86_code + ip_x86++) = (char)(0x5E);   \
+
+
+#define CMP_RDI_RSI                                    \
+   *(x86struct->x86_code + ip_x86++) = (char)(0x48);   \
+   *(x86struct->x86_code + ip_x86++) = (char)(0x39);   \
+   *(x86struct->x86_code + ip_x86++) = (char)(0xF7);   \
+
+
 const int Page_size           = 4096;
 const int Max_x86_cmd_size    = 100; // if something went wrong, resize more
-const int Addr_array_capacity = 100;
+const int Addr_array_capacity = 1000;
 
 
 typedef struct x86bin_code
@@ -81,9 +118,11 @@ typedef struct x86bin_code
    int PSL_size = 0;
    size_t capacity = 0;
 
-   int  number_of_adress;
-   int* x86_code_adress ;
-   int* PSL_code_adress ;
+   int step = 0;
+
+   int number_of_ip = 0;
+   int* x86_code_address ;
+   int* PSL_code_address ;
 
 }x86bin_code;
 
@@ -94,4 +133,7 @@ void x86bin_code_con(FILE* ass, x86bin_code* x86struct);
 
 int compile(x86bin_code* x86struct);
 
+int find_ip(int* PSL_code_address, int cur_ip, int number_of_ip);
+
+void print_x86_file(char* x86_code, int capacity);
 #endif

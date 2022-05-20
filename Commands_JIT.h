@@ -7,6 +7,8 @@
 
 DEF_CMD_(0x0F, HLT, 0, 
 {
+    PUT_IP;
+
     fprintf(stderr, "IT IS HLT\n"
                     "SOMETHING WENT WRONG\n");
 }
@@ -14,7 +16,7 @@ DEF_CMD_(0x0F, HLT, 0,
 
 DEF_CMD_(0x11, PUSH, 1, 
 {   
-    //0x68 0x5 !PUSH 5 //unnamed pointer on integer
+    PUT_IP;
 
     ip_PSL++;
     
@@ -28,6 +30,8 @@ DEF_CMD_(0x11, PUSH, 1,
 
 DEF_CMD_(0x12, PUSH_X, 1, 
 {   
+    PUT_IP;
+
     ip_PSL++;
 
     switch (*(x86struct->PSL_code + ip_PSL))
@@ -84,6 +88,8 @@ DEF_CMD_(0x21, POP, 1,
 
 DEF_CMD_(0x22, POP_X, 1, 
 {
+    PUT_IP;
+
     ip_PSL++;
 
     switch (*(x86struct->PSL_code + ip_PSL))
@@ -131,13 +137,16 @@ DEF_CMD_(0x23, POP_MEM, 1,
 
 DEF_CMD_(0x06, ADD, 0,
 {
+    PUT_IP;
+
     ip_PSL++;
-    *(x86struct->x86_code + ip_x86++) = (char)(0x5F);
-    *(x86struct->x86_code + ip_x86++) = (char)(0x5E);
+
+    POP_RDI;
+    POP_RSI;
     *(x86struct->x86_code + ip_x86++) = (char)(0x48);
     *(x86struct->x86_code + ip_x86++) = (char)(0x01);
     *(x86struct->x86_code + ip_x86++) = (char)(0xF7);
-    *(x86struct->x86_code + ip_x86++) = (char)(0x57);
+    PUSH_RDI;
 
     // pop rdi       //0x5F
     // pop rsi       //0x5E
@@ -148,14 +157,17 @@ DEF_CMD_(0x06, ADD, 0,
 
 
 DEF_CMD_(0x07, SUB, 0,
-{       
+{   
+    PUT_IP;
+
     ip_PSL++;
-    *(x86struct->x86_code + ip_x86++) = (char)(0x5F);
-    *(x86struct->x86_code + ip_x86++) = (char)(0x5E);
+
+    POP_RDI;
+    POP_RSI;
     *(x86struct->x86_code + ip_x86++) = (char)(0x48);
     *(x86struct->x86_code + ip_x86++) = (char)(0x29);
     *(x86struct->x86_code + ip_x86++) = (char)(0xF7);
-    *(x86struct->x86_code + ip_x86++) = (char)(0x57);
+    PUSH_RDI;
 
     //pop rdi       //0x5F
     //pop rsi       //0x5E
@@ -167,6 +179,8 @@ DEF_CMD_(0x07, SUB, 0,
 
 DEF_CMD_(0x08, MUL, 0,
 {
+    PUT_IP;
+
     ip_PSL++;
 
     SAVE_RAX;
@@ -190,6 +204,8 @@ DEF_CMD_(0x08, MUL, 0,
 
 DEF_CMD_(0x09, DIV, 0, 
 {
+    PUT_IP;
+
     ip_PSL++;
 
     SAVE_RAX;
@@ -220,6 +236,7 @@ DEF_CMD_(0x10, SQRT, 0,
 
 DEF_CMD_(0x16, SHOW, 0, 
 {
+    PUT_IP;
     
     (++ip_PSL);
  
@@ -249,6 +266,8 @@ DEF_CMD_(0x16, SHOW, 0,
 
 DEF_CMD_(0x17, IN, 0,
 {
+    PUT_IP;
+
     ip_PSL++;
 
     *(x86struct->x86_code + ip_x86++) = (char)(0x41);      //mov r10,...
@@ -284,5 +303,174 @@ DEF_CMD_(0x17, IN, 0,
     RET_RBX;
     RET_RCX;
     RET_RDX;
+}
+)
+
+
+DEF_CMD_(0x0D, JMP_POINTER, 1, 
+{
+    PUT_IP;
+
+    ip_PSL++;
+    *(x86struct->x86_code + ip_x86++) = (char)0xEB; //jmp
+
+    int jmp_ip = *(int*)(x86struct->PSL_code + ip_PSL);
+
+    if (x86struct->step != 0)
+    {
+        int cell   = find_ip(x86struct->PSL_code_address, jmp_ip, x86struct->number_of_ip);
+
+        if (cell != -1)
+        {
+            *(x86struct->x86_code + ip_x86) = (unsigned char)(x86struct->x86_code_address[cell] - ip_x86 - 1);
+        }
+
+    }
+
+    ip_PSL += 4;
+    ip_x86++;
+}
+)
+
+DEF_CMD_(0x1D, JE_POINTER, 1,
+{
+    PUT_IP;
+
+    ip_PSL++;
+
+    POP_RDI;
+    POP_RSI;
+    CMP_RDI_RSI;
+
+    *(x86struct->x86_code + ip_x86++) = (char)0x74;  //je
+
+    int jmp_ip = *(int*)(x86struct->PSL_code + ip_PSL);
+
+    if (x86struct->step != 0)
+    {
+        int cell   = find_ip(x86struct->PSL_code_address, jmp_ip, x86struct->number_of_ip);
+
+        if (cell != -1)
+        {
+            *(x86struct->x86_code + ip_x86) = (unsigned char)(x86struct->x86_code_address[cell] - ip_x86 - 1);
+        }
+
+    }
+    else
+    {
+        *(x86struct->x86_code + ip_x86) = (char)0x00;
+    }
+
+    ip_PSL += 4;
+    ip_x86++;
+}
+)
+
+DEF_CMD_(0x2D, JNE_POINTER, 1,
+{
+    PUT_IP;
+
+    POP_RDI;
+    POP_RSI;
+    CMP_RDI_RSI;
+
+    ip_PSL++;
+    *(x86struct->x86_code + ip_x86++) = (char)0x75;
+
+    int jmp_ip = *(int*)(x86struct->PSL_code + ip_PSL);
+
+    if (x86struct->step != 0)
+    {
+        int cell   = find_ip(x86struct->PSL_code_address, jmp_ip, x86struct->number_of_ip);
+
+        if (cell != -1)
+        {
+            *(x86struct->x86_code + ip_x86) = (unsigned char)(x86struct->x86_code_address[cell] - ip_x86 - 1);
+        }
+
+    }
+
+    ip_PSL += 4;
+    ip_x86++;
+}
+)
+
+
+DEF_CMD_(0x3D, JA_POINTER, 1,
+{
+    PUT_IP;
+
+    POP_RDI;
+    POP_RSI;
+    CMP_RDI_RSI;
+
+    ip_PSL++;
+    *(x86struct->x86_code + ip_x86++) = (char)0x77;
+
+    int jmp_ip = *(int*)(x86struct->PSL_code + ip_PSL);
+
+    if (x86struct->step != 0)
+    {
+        int cell   = find_ip(x86struct->PSL_code_address, jmp_ip, x86struct->number_of_ip);
+
+        if (cell != -1)
+        {
+            *(x86struct->x86_code + ip_x86) = (unsigned char)(x86struct->x86_code_address[cell] - ip_x86 - 1);
+        }
+
+    }
+
+    ip_PSL += 4;
+    ip_x86++;
+}
+)
+
+
+DEF_CMD_(0x4D, JB_POINTER, 1,
+{
+    PUT_IP;
+
+    POP_RDI;
+    POP_RSI;
+    CMP_RDI_RSI;
+
+    ip_PSL++;
+    *(x86struct->x86_code + ip_x86++) = (char)0x72;
+
+    int jmp_ip = *(int*)(x86struct->PSL_code + ip_PSL);
+
+    if (x86struct->step != 0)
+    {
+        int cell   = find_ip(x86struct->PSL_code_address, jmp_ip, x86struct->number_of_ip);
+
+        if (cell != -1)
+        {
+            *(x86struct->x86_code + ip_x86) = (unsigned char)(x86struct->x86_code_address[cell] - ip_x86 - 1);
+        }
+
+    }
+
+    ip_PSL += 4;
+    ip_x86++;
+}
+)
+
+
+DEF_CMD_(0x5D, CALL_POINTER, 1,
+{
+    PUT_IP;
+
+    *(x86struct->x86_code + ip_x86++) = (char)0xE8; //adress 4 byte
+
+}
+)
+
+DEF_CMD_(0x6A, RET, 0,
+{
+    PUT_IP;
+
+    ip_PSL++;
+
+    *(x86struct->x86_code + ip_x86++) = (char)0xC3;
 }
 )
