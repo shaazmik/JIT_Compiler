@@ -8,4 +8,4 @@ ___JIT___
 >make
 -
 
-BEST KIT EVER AT https://github.com/Ropho/JIT
+BEST JIT EVER AT https://github.com/Ropho/JIT
