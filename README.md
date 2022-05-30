@@ -6,15 +6,22 @@
 - Processor input data should be in the ```Assembler_PSL/Assembler/commands.txt``` file
 - [PSL processor command table](#Processor_command_table)
 
-___./JIT_compiler___
-- firstly, the ```assembler.bin``` file must be prepared 
-- start ```makefile``` on Linux (```Bash```).
-- ```make```
-- ```a.out```
 
 ___.JIT_compiler/Assembler_PSL/Assembler___
 - ```make```
 - ```./assembler.out```
+- the PSL binary code is in the ```assembler.bin``` file
 
+___./JIT_compiler/Assembler_PSL/CPU___
+- ```make```
+- to run our processor emulator in C
+- ```./processor.out```
+
+
+___./JIT_compiler___
+- firstly, the ```assembler.bin``` file must be prepared 
+- start ```makefile``` on Linux (```Bash```).
+- ```make```
+- ```./a.out```
 
 ### Processor_command_table
