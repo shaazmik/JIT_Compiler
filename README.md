@@ -7,5 +7,3 @@ ___JIT___
 - start ```makefile``` on Linux (```Bash```).
 >make
 -
-
-BEST JIT EVER AT https://github.com/Ropho/JIT
