@@ -5,7 +5,6 @@
 
 **JIT-compiler** translates my **PSL (Programming Specific Language)** architecture<br/>
 into binary code for **the x86-64** processor architecture.<br/>
-For illustration let's compare running time of my virtual processor  <br/>
 with running time of program on **x86-64**. <br/>
 The basic idea behind a **JIT compiler** is to translate the binary code of one architecture into the binary code of another architecture. <br/>
 The main difference is that the program is executed from a buffer stored in the JIT compiler program. <br/>
