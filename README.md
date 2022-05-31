@@ -12,12 +12,14 @@ The main difference is that the program is executed from a buffer stored in the 
 In this case, creating an **OS-specific** **executable** is irrelevant, which is more cross-platform than <br/>
 creating an **executable** for each OS. Only the **architecture** of the processor matters. <br/>
 
+___
+
 ## To compilie:
 
 - Processor input data should be in the ```Assembler_PSL/Assembler/commands.txt``` file
 - [PSL processor command table](#Processor_command_table)
 
-#### For PSL_assembker
+#### For PSL_assembler
 
 ___.JIT_compiler/Assembler_PSL/Assembler___
 - ```make```
@@ -41,8 +43,18 @@ ___./JIT_compiler___
 - ```make```
 - ```./a.out```
 
+___
 
 ## Main page:
+- The registers were used to transfer data.
+- System V Calling Convention.
+- The memory is used to save registers according to convention and to return and transfer arguments.
+- The processor commands are written to the ```Assembler_PSL\commands.txt``` file.
+
+___Perfomance tests:___
+* factorial
+* Fibonacci number
+* quadratic equation
 
 
 ## Processor_command_table
@@ -189,3 +201,4 @@ DEF_CMD_(0x10, SQRT, 0,
 }
 )
 ```
+## Results 
