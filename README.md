@@ -79,7 +79,7 @@ ___For more information see the ```Commands_JIT.h``` file___<br/>
 |```HLT    ```|0x0F         |0xC3         |
 
 
-## Description of functions
+## Description of functions(```SHOW, IN, SQRT```)
 
 **The commands described have a DSL (Domain Specific Language). Their description can be found in the ```JIT_DSL.h``` file.** <br/>
 ___These functions work by calling the standard functions ```Printf```, ```Scanf```, ```sqrt```.___
