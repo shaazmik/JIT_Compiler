@@ -5,6 +5,8 @@
 
 **JIT-compiler** translates my **PSL (Programming Specific Language)** architecture<br/>
 into binary code for **the x86-64** processor architecture.<br/>
+For illustration let's compare running time of our processor<br/>
+with running time of program on **x86-64**.
 
 
 ### To compilie:
