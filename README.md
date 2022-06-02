@@ -200,7 +200,12 @@ DEF_CMD_(0x10, SQRT, 0,
 }
 )
 ```
+
+___
 ## Results:
+
 ___For comparison, let's take the results of our virtual processor and JIT___
 
+![Image alt](https://github.com/shaazmik/JIT_Compiler/blob/main/image/CPU_FAC16.PNG)
 
+___
