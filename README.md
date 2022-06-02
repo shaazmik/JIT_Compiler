@@ -48,7 +48,7 @@ ___
 - The registers were used to transfer data.
 - System V Calling Convention.
 - The memory is used to save registers according to convention and to return and transfer arguments.
-- The processor commands are written to the ```Assembler_PSL\commands.txt``` file.
+- The assembler commands need to write to the ```Assembler_PSL\commands.txt``` file.
 
 ___Perfomance tests:___
 * factorial
@@ -206,6 +206,27 @@ ___
 
 ___For comparison, let's take the results of our virtual processor and JIT___
 
+### Virtual processor result:
+
+- Performance test: **calculating the factorial 16**
+- All checks and logs disabled
+- ```-O2``` flag
+- **1 789 432** incl.
+
 ![Image alt](https://github.com/shaazmik/JIT_Compiler/blob/main/image/CPU_FAC16.PNG)
 
+
+### x86-64 result:
+
+- Performance test: **calculating the factorial 16**
+- ___Only record the programme running time.___
+- without any flags.
+- **152 994** incl.
+
+![Image alt](https://github.com/shaazmik/JIT_Compiler/blob/main/image/JITFAC16.PNG)
+
 ___
+
+
+## Conclusion:
+
