@@ -200,4 +200,7 @@ DEF_CMD_(0x10, SQRT, 0,
 }
 )
 ```
-## Results 
+## Results:
+___For comparison, let's take the results of our virtual processor and JIT___
+
+
