@@ -1,7 +1,7 @@
 # JIT_Compiler
 ## JIT compiler my programming specific language (PSL) to x86 architecture
 
-## Introduction:
+# Introduction:
 
 **JIT-compiler** translates my **PSL (Programming Specific Language)** architecture<br/>
 into binary code for **the x86-64** processor architecture.<br/>
@@ -12,7 +12,18 @@ creating an **executable** for each OS. Only the **architecture** of the process
 
 ___
 
-## To compilie:
+# To compilie:
+
+___
+___OPTIONS:___
+
+- OS: Linux(Ubuntu)
+- Compiler: GCC
+- Language: C, C++, Assembler
+- Profiler: **valgrind --tool=callgrind** 
+
+___
+
 
 - Processor input data should be in the ```Assembler_PSL/Assembler/commands.txt``` file
 - [PSL processor command table](#Processor_command_table)
@@ -43,11 +54,13 @@ ___./JIT_compiler___
 
 ___
 
-## Main page:
+# Main page:
 - The registers were used to transfer data.
 - System V Calling Convention.
 - The memory is used to save registers according to convention and to return and transfer arguments.
 - The assembler commands need to write to the ```Assembler_PSL\commands.txt``` file.
+- To compare performance, we will run the same programs on the ___virtual CPU and compiled by JIT___.
+- Take the performance data from the **callgrind**.
 
 ___Perfomance tests:___
 * factorial
@@ -55,7 +68,7 @@ ___Perfomance tests:___
 * quadratic equation
 
 ___
-## Processor_command_table
+# Processor_command_table
 
 ___All PSL  commands have some kind of wrapper in x86-64, so tabular data may be different___<br/>
 ___For more information see the ```Commands_JIT.h``` file___<br/>
@@ -201,7 +214,7 @@ DEF_CMD_(0x10, SQRT, 0,
 ```
 
 ___
-## Results:
+# Results:
 
 ___For comparison, let's take the results of our virtual processor and JIT___
 
@@ -219,13 +232,20 @@ ___For comparison, let's take the results of our virtual processor and JIT___
 
 - Performance test: **calculating the factorial 16**
 - ___Only record the programme running time.___
-- without any flags.
+- without any flags
 - **152 994** incl.
 
 ![Image alt](https://github.com/shaazmik/JIT_Compiler/blob/main/image/JITFAC16.PNG)
 
+
+
+
+
 ___
 
 
-## Conclusion:
+# Conclusion:
 
+___As you can see the difference in performance is about 11,7 times___ <br/>
+___This is obvious because the virtual processor has many more x86-64 instructions within it to execute a single instruction___<br/>
+___This suggests that the programme is working correctly.___
